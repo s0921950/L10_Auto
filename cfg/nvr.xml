@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sequence quanta="6" halt="0" runenv="mfg">
+    <module module="Temperature" code="1">
+        <unit.1 item="Change directory">
+            <command>cd ${RCD}</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.1>
+        <unit.2 item="Check Temperature">
+            <command>./check_temp.sh</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.2>
+    </module>
+    <module module="Mac Address" code="Check Mac Address">
+        <unit.3 item="">
+            <command></command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.3>
+    </module>
+    <module module="" code="">
+        <unit.4 item="">
+            <command></command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.4>
+    </module>
+    <module module="" code="">
+        <unit.5 item="">
+            <command></command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.5>
+    </module>
+    <module module="" code="">
+        <unit.6 item="">
+            <command></command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.6>
+    </module>
+</sequence>

@@ -1,0 +1,338 @@
+#
+# Functions: This file contains functions to be used by most or all
+#            shell scripts in the /usr/local/Foxconn/rc.d directory.
+# Author: Aaron Luo
+# Date: 11/13/2013
+#
+#
+
+. ${FOX}/cfg/public.env
+. ${FOX}/cfg/uutself.cfg.env
+
+# a public variable, it will record the command's return code
+declare -i err=0
+
+# $1 - keyword
+# $2 - path to xml file
+function xml_parse()
+{
+    local keyword=""
+    local line=""
+    local col=`sed -n "/<$1\>/=" $2`
+    local last=`sed -n "/<\/$1>/=" $2`
+
+    [ -z "$col" ] && echo "err=255" && exit 255
+
+    line=`sed -n "$col p" $2`
+    line=${line#*$1}
+
+    if [ -z "$last" ]; then
+        line=${line%/>*}
+        echo ${line} | awk '{for (c=1;c<=NF;c++) print $c}'
+        last=0
+    else
+        echo ${line%*>}
+    fi
+
+    let col+=1
+    while (( $col < $last )); do
+        line=`sed -n "$col p" $2`
+        if [ -n "$line" ]; then
+            keyword=${line##*/}
+            line=${line%<*}
+            echo "${keyword/>/=}\"${line#*>}\""
+        fi
+        let col+=1
+    done
+    echo "err=0"
+    exit 0
+}
+
+# show message in green
+function green_message()
+{
+    tput bold
+    echo -ne "\033[32m$@\033[0m"
+    tput sgr0
+    echo
+}
+
+# show message in red
+function red_message()
+{
+    tput bold
+    echo -ne "\033[31m$@\033[0m"
+    tput sgr0
+    echo
+}
+
+function showfp() 
+{
+    [ -z "$1" ] && return $2
+    echo -ne "$1 "
+    tlen=`expr length "$1"`
+    while (($tlen < 61)); do
+        echo -ne "-"
+        let tlen+=1
+    done
+
+    tput bold
+    if [ $2 -eq 0 ]; then
+        echo -e " [\033[32m PASS \033[0m]"
+#        echo " [ PASS ]"
+    else
+        echo -e " [\033[31m FAIL \033[0m]"
+#        echo " [ FAIL ]"
+    fi
+    tput sgr0
+    echo
+
+    return $2
+}
+
+# returns OK if $1 contains $2
+function strstr()
+{
+    [ "${1#*$2*}" = "$1" ] && return 1
+    return 0
+}
+
+# Evaluate shvar-style booleans
+function boolean()
+{
+    case "$1" in
+        [tT] | [yY] | [yY][eE][sS] | [tT][rR][uU][eE])
+        return 0
+        ;;
+        [fF] | [nN] | [nN][oO] | [fF][aA][lL][sS][eE])
+        return 1
+        ;;
+    esac
+    return 255
+}
+
+function confirm ()
+{
+    local ans=""
+    local -i ret=0
+
+    while [ -z "$ans" ]; do
+        read -p "$1" ans
+        boolean $ans
+        ret=$?
+        [ $ret -eq 255 ] && ans=""
+    done
+    echo "$ans"
+    
+    return $ret
+}
+
+# Run from here
+# $1 - item name
+# $2 - command
+# $3 - redirection file
+function run_command()
+{
+    [ -z "$2" ] && return 0
+    echo
+    date +"<Info message>: ${1} - start time: %F %T"
+    echo
+    echo "[$USER@$HOSTNAME `basename $PWD`]# $2"
+    # Execute command here...
+    sleep 1
+    if [ -z "$3" ]; then
+        eval $2
+        err=$?
+    else
+        eval $2 > $3
+        err=$?
+        cat $3
+    fi
+    wait
+    echo "[$USER@$HOSTNAME `basename $PWD`]# echo \$?"
+    echo $err
+    echo "[$USER@$HOSTNAME `basename $PWD`]# "
+    echo
+    date +"<Info message>: ${1} - end time: %F %T"
+    echo
+    
+    # if an error occur, just record it
+    if [ $err -ne 0 ] && [ -n "$REPORT" ]; then
+    {
+        echo " > $1"
+        [ -n "$code" ] && echo "@CODEID = $code"
+        echo "@ERRORCODE = $err"
+    } >> $REPORT
+    fi
+    
+    return $err
+}
+
+function trim()
+{
+    echo $1 | sed -e 's/^[ ]*//g' -e 's/[ ]*$//g'
+}
+
+# $1 - item's name
+# $2 - expected string
+function expectancy()
+{
+    [ -z "$2" ] && return 0
+    err=1
+    [ -z "$1" ] && return $err
+    
+    ls -aR > /dev/null 2>&1
+    local col=`sed -n "/$1 - start time/=" $LOGFILE | sed -n '$p'`
+    local end=`sed -n "/$1 - end time/=" $LOGFILE | sed -n '$p'`
+    local howmany=`echo "$2" | awk -F'|' '{print NF}'`
+
+    err=2
+    if [ -z "$col" -o -z "$end" ]; then
+        red_message "Not found test item '$1' in the log file"
+        return $err
+    fi
+    while [ $col -lt $end ] && [ $err -ne 0 ]; do
+        let col+=1
+        line=`sed -n "$col p" $LOGFILE`
+        [ "${line#*]# }" = 'echo $?' ] && break
+        line=`trim "$line"`
+        i=1
+        while (( $i <= $howmany )); do
+            c=`echo "$2" | awk -F'|' '{print $'$i'}'`
+            c=`trim "$c"`
+            [ "$c" = "$line" ] && err=0 && break
+            let i+=1
+        done
+    done
+
+    if [ $err -ne 0 ]; then
+        {
+            echo " > $1"
+            [ -n "$code" ] && echo "@CODEID = $code"
+            echo "@ERRORCODE = $err"
+        } >> $REPORT
+        
+        if [ -n "${warning}" ]; then
+            red_message ${warning}
+            warning=""
+        fi
+        red_message "Failed in verifying '$1': "
+        red_message "    Not found expected value@ '$2' from output."
+        echo
+    fi
+
+    return $err
+}
+
+function summary_log_file()
+{
+    local fru0=$FOX/tmp/$serial_number.fru0
+    local DATE=`date +'%F'`
+    local TIME=`date +'%T'`
+
+
+
+    if [ "${Level_Number}" = "L6" ] || [ "${Level_Number}" = "L10" ]; then
+        [ -z "${Operator_ID}" ] && [ "$whereiam" = "EPD6" ] && . $CFGFILE
+        local opid=`awk -F':' '/Operator ID\[.*]/ {print $1}' $LOGFILE`
+        local station=`awk -F':' '/Station ID\[.*]/ {print $1}' $LOGFILE`
+        local sn=`awk -F':' '/Serial Number\[.*]/ {print $1}' $LOGFILE`
+        local pn=`awk -F':' '/Part Number\[.*]/ {print $1}' $LOGFILE`
+        local macaddr=`awk -F':' '/MAC Address\[.*]/ {print $1}' $LOGFILE`
+        
+        sed -i -e "/Operator ID\[.*/c\\$opid: ${Operator_ID}" \
+               -e "/Station ID\[.*/c\\$station: $Station_ID" \
+               -e "/Serial Number\[.*/c\\$sn: $Serial_Number" \
+               -e "/Part Number\[.*/c\\$pn: $Part_Number" \
+               -e "/MAC Address\[.*/c\\$macaddr: $MAC_Address" $LOGFILE
+    fi
+
+}
+
+function env_clean()
+{
+    rm -fr $FOX/tmp/*
+    rm -fr $FOX/log/*
+    rm -fr ${mboard} $LOGFILE $REPORT ${startime}
+    rm -fr ${SIGNBOARD}.*
+}
+
+function backup_log()
+{
+    # Backup log file to /log/diag
+    cat $LOGFILE > /log/diag/${MAC0}_${Level_Number}.log
+}
+
+function restore_log()
+{
+    # Restore log file from /log/diag
+    if [ -f /log/diag/${MAC0}_${Level_Number}.log ]; then
+        cat /log/diag/${MAC0}_${Level_Number}.log > $LOGFILE
+        rm -fr /log/diag/${MAC0}_${Level_Number}.log
+    fi
+}
+
+# load config file and parse xml of label.xml
+# $1 - product name
+# $2 - path to xml
+function load_config_env()
+{
+    eval `xml_parse "$1" "$2"`
+    if [ $err -ne 0 ]; then
+        red_message "Not found product name: ${1} in config file: $2"
+        exit $err
+    fi
+}
+
+function load_test_driver()
+{
+    #CLI Driver
+    lsmod | grep "clidriver"
+    if [ $? -ne 0 ];then
+        insmod /usr/local/Foxconn/CLI/driver/clidriver.ko
+    fi
+    return 0
+}
+
+function set_uut_ip()
+{
+    local -i idx=0
+    local howmany=$(lspci | grep -c "Ethernet")
+    readonly key="bnx2"
+
+    while [ $idx -lt $howmany ]; do
+        if [ -n "$(ethtool -i eth${idx} | grep $key)" ]; then
+            ifconfig eth${idx} | grep 'inet addr'
+            [ $? -eq 0 ] && return 0
+
+            ifdown eth${idx}
+            ifup eth${idx}
+            break
+        fi
+        let idx+=1
+    done > /dev/null 2>&1
+
+    if [ $idx -ge $howmany ]; then
+        red_message "Error: not found the specified ethernet card!"
+        exit 2
+    fi
+            
+    ifconfig eth${idx} | grep 'inet addr' > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        red_message "Fail to assign an ip for eth${idx}"
+        exit 1
+    fi
+    sleep 1
+}
+
+function  select_nic()
+{
+     LOM1=`ifconfig -a |grep "70:10:6F" |awk '{print $1}'|sed -n 1p` >/dev/null 2>&1
+     LOM2=`ifconfig -a |grep "70:10:6F" |awk '{print $1}'|sed -n 2p` >/dev/null 2>&1
+     sed -i "/export LOM1/c\export LOM1=\"${LOM1}\"" ${CFGFILE}
+     sed -i "/export LOM2/c\export LOM2=\"${LOM2}\"" ${CFGFILE}
+     LOM3=`ifconfig -a |grep "58:20:B1" |awk '{print $1}'|sed -n 1p` >/dev/null 2>&1
+     LOM4=`ifconfig -a |grep "58:20:B1" |awk '{print $1}'|sed -n 2p` >/dev/null 2>&1
+     sed -i "/export LOM3/c\export LOM3=\"${LOM3}\"" ${CFGFILE}
+     sed -i "/export LOM4/c\export LOM4=\"${LOM4}\"" ${CFGFILE}
+}
