@@ -160,7 +160,7 @@ while ((1)); do
     ssn=$label
     scan_no_old "请确认产品序号"
     [ "$ssn" != "$label" ] && continue
-
+    echo -e "${ssn}" > ssn
     break
 done
 
