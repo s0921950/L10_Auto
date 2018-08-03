@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sequence quanta="7" halt="0" runenv="mfg">
+<sequence quanta="15" halt="0" runenv="mfg">
     <module module="Mac Address" code="1">
         <unit.1 item="Change directory">
             <command>cd ${RCD}</command>
