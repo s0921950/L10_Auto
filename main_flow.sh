@@ -10,7 +10,7 @@ readonly VERSION=""
 readonly RELEASEDATE="//2013"
 readonly AUTHOR="Aaron Luo"
 readonly COPYRIGHT="Copyright(c)2013 Foxconn IND., Group."
-export FOX="/home/adam/workspace/L10_Auto"
+export FOX="/home/foxconn/workspace/L10_Auto"
 
 . ${FOX}/rc.d/functions
 
@@ -67,7 +67,6 @@ function run_scripts()
 {
     local unit=$1
     local end=$2
-
     [ -f $mboard ] && unit=`cat $mboard` && let unit+=1
     while (( $unit <= $end )); do
         eval `xml_parse "unit.$unit" "$SEQ"`
@@ -180,7 +179,7 @@ function initial_level_mfg()
             flag[0]=1
             export Level_Number=${o}
             sed -i "/^export Level_Number/c\export Level_Number=\"${o}\"" \
-                    /home/adam/workspace/L10_Auto/cfg/public.env
+                    ${CFG}/public.env
             ;;
 
             LVI | LX )
@@ -188,7 +187,7 @@ function initial_level_mfg()
             flag[1]=1
             export whereiam=${o}
             sed -i "/^export whereiam/c\export whereiam=\"${o}\"" \
-                    /home/adam/workspace/L10_Auto/cfg/public.env
+                    ${CFG}/public.env
             ;;
 
             *)
@@ -227,7 +226,7 @@ while [ -n "$1" ]; do
         [ -n "$var" ] && initial_level_mfg "$var"
 
         # export running variables again ...
-        . /home/adam/workspace/L10_Auto/cfg/public.env
+        . ${CFG}/public.env
 
         # flag of doing test
         flag[2]=1
@@ -281,7 +280,7 @@ if [ ! -f ${startime} ]; then
     rm -fr ${REPORT}
 fi > /dev/null 2>&1
 
-restore_log
+#restore_log
 
 {
 
@@ -310,11 +309,11 @@ restore_log
     #     cd ${RCD}
     #     ./wflag.sh ft
     # fi
-} 2>&1 | tee -a ${LOGFILE}
+} 2>&1 
 . ${CFGFILE}
 #. ${RCD}/phase.flag
 # summary the test log
-summary_log_file ${LOGFILE}
+# summary_log_file ${LOGFILE}
 
 # upload the final test log file to sfc
 #cd ${RCD}
@@ -326,7 +325,7 @@ env_clean > /dev/null 2>&1              #close by andy 2014-08-25
 
 cd ${RCD}
 if [ $err -ne 0 ]; then
-    ./id_led.sh fail &
+    # ./id_led.sh fail &
     echo
     while ((1)); do
         read -p "Do you want to shutdown the system?[Y|N]: " ans
