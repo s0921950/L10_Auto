@@ -24,9 +24,9 @@ echo check bios vendor...
 vendor=`dmidecode -t bios | awk -F': ' '/Vendor/ {print $2}'`
 echo $vendor  $BIOS_VENDOR 
 if [ "$vendor" = "$BIOS_VENDOR" ]; then
-  pass_message "Bios供应商测试通过..."
+  green_message "Bios供应商测试通过..."
 else
-  fail_message "Bios供应商测试失败..."
+  red_message "Bios供应商测试失败..."
   . ${RCD}/failed.sh
   exit 1
 fi
@@ -36,9 +36,9 @@ echo check bios version...
 version=`dmidecode -t bios | awk -F': ' '/Version/ {print $2}' | awk '{print toupper($0)}'`
 echo $version   $BIOS_VERSION
 if [ "$version" = "$BIOS_VERSION" ]; then
-  pass_message "Bios版本测试通过..."
+  green_message "Bios版本测试通过..."
 else
-  fail_message "Bios版本测试失败..."
+  red_message "Bios版本测试失败..."
   . ${RCD}/failed.sh
   exit 1
 fi
@@ -48,10 +48,10 @@ echo check bios Release Date...
 release_date=`dmidecode -t bios | awk -F': ' '/Release Date/ {print $2}'`
 echo $release_date   $BIOS_RELEASE_DATE
 if [ "$release_date" = "$BIOS_RELEASE_DATE" ]; then
-  pass_message "Bios发布日期测试通过..."
+  green_message "Bios发布日期测试通过..."
   exit 0
 else
-  fail_message "Bios发布日期测试失败..."
+  red_message "Bios发布日期测试失败..."
   . ${RCD}/failed.sh
   exit 1
 fi

@@ -6,7 +6,7 @@
 #
 ############# Version ###############
 
-. ${FOX}/rc.d/functions
+. ${RCD}/functions
 
 failed_log="MAC address"
 ssn=`cat ${FOX}/ssn`
@@ -21,7 +21,7 @@ if [ "$mac" = "" ]; then
 fi
 
 if [ "$mac" = "" ]; then
-    fail_message "请将网线接上後重新执行测试"
+    red_message "请将网线接上後重新执行测试"
     # . ${RCD}/failed.sh
     exit 1
 

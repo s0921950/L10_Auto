@@ -6,7 +6,7 @@
 #
 ############# Version ###############
 
-. ${FOX}/rc.d/functions
+. ${RCD}/functions
 
 readonly HIGH_TEMPER=80
 readonly LOW_TEMPER=15
