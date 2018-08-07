@@ -142,16 +142,21 @@ function scan_opid_sid()
 }
 
 ##### start from here ##########################################
-#echo "请扫描:"
+echo "请扫描:"
 #scan_opid_sid
-#while (( 1 )); do
-#    scan_no_old "请扫描工号"
-#    op_id=$label
+while (( 1 )); do
+    scan_no_old "请扫描工号"
+    op_id=$label
 #    scan_no_old "请确认工号"
 #    [ "$op_id" != "$label" ] && continue
-
-#    break
-#done
+    if [ `expr length ${label}` != 8 ];then
+      label=""
+      echo "请扫描八位数工号"
+      continue
+    fi
+    echo -e "${op_id}" > op_id
+    break
+done
 
 echo "请扫描条码:"
 #scan Product SN
