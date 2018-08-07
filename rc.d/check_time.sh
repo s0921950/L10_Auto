@@ -6,7 +6,7 @@ failed_log='TIME';
 
 if [ ! -n "$check_time" ] ; then
 
-	fail_message "时间验证失败..."
+	red_message "时间验证失败..."
 	. ${RCD}/failed.sh
 	exit 1
 fi

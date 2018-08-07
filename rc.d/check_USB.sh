@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Description: this script for check SD and MD card.
-# Author: Andrew chuang
+# Author: 
 # Date: 30/10/2017
 #
 ############# Version ###############
@@ -34,7 +34,7 @@ while [ 1 ]; do
         rm $USB1_PATH/sd.img
         if [ "$MD5_SOURCE" != "$usb1Md5Value" ]; then
             red_message "USB1测试失败..."
-            # . ${RCD}/failed.sh
+            . ${RCD}/failed.sh
             exit 1;
         fi
         green_message "USB1测试通过..."
@@ -44,7 +44,7 @@ while [ 1 ]; do
         rm $USB2_PATH/sd.img
         if [ "$MD5_SOURCE" != "$usb2Md5Value" ]; then
             red_message "USB2测试失败..."
-            # . ${RCD}/failed.sh
+            . ${RCD}/failed.sh
             exit 1;
         fi
         green_message "USB2测试通过..."
@@ -54,7 +54,7 @@ while [ 1 ]; do
         rm $USB3_PATH/sd.img
         if [ "$MD5_SOURCE" != "$usb3Md5Value" ]; then
             red_message "USB3测试失败..."
-            # . ${RCD}/failed.sh
+            . ${RCD}/failed.sh
             exit 1;
         fi
         green_message "USB3测试通过..."
@@ -64,7 +64,7 @@ while [ 1 ]; do
         rm $USB4_PATH/sd.img
         if [ "$MD5_SOURCE" != "$usb4Md5Value" ]; then
             red_message "USB4测试失败..."
-            # . ${RCD}/failed.sh
+            . ${RCD}/failed.sh
             exit 1;
         fi
         green_message "USB4测试通过..."
@@ -74,7 +74,7 @@ while [ 1 ]; do
         rm $USB5_PATH/sd.img
         if [ "$MD5_SOURCE" != "$usb5Md5Value" ]; then
             red_message "USB5测试失败..."
-            # . ${RCD}/failed.sh
+            . ${RCD}/failed.sh
             exit 1;
         fi
         green_message "USB5测试通过..."

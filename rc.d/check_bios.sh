@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Description: this script for check bios.
-# Author: Andrew chuang
+# Author: 
 # Date: 30/10/2017
 #
 ############# Version ###############
