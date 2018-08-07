@@ -336,6 +336,10 @@ if [ $err -ne 0 ]; then
     done
 fi
 
+echo -e "${ssn}" > /root/Flags/pretested.flg
+echo -e "0" > $HOME/Flags/reboot.flg
+echo -e "0" > $HOME/Flags/run_in.flg
+
 #cd ${RCD}
 #./wflag.sh init
   
