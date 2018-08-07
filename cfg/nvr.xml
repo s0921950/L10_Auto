@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<sequence quanta="15" halt="0" runenv="mfg">
+<sequence quanta="23" halt="0" runenv="mfg">
     <module module="Mac Address" code="1">
         <unit.1 item="Change directory">
             <command>cd ${RCD}</command>
@@ -148,5 +148,84 @@
             <warning></warning>
             <delay></delay>
         </unit.15>
+    <module module="SD MD" code="8">
+        <unit.16 item="Change directory">
+            <command>cd ${RCD}</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.16>
+        <unit.17 item="Check SD MD card">
+            <command>./check_SD_MS.sh</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.17>
+    </module>
+    <module module="Loopback" code="9">
+        <unit.18 item="Change directory">
+            <command>cd ${RCD}</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.18>
+        <unit.19 item="Check Loopback">
+            <command>./check_loopback.sh</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.19>
+    </module>
+    <module module="Speaker" code="10">
+        <unit.20 item="Change directory">
+            <command>cd ${RCD}</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.20>
+        <unit.21 item="Check Speaker">
+            <command>./check_speaker.sh</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.21>
+    </module>
+    <module module="SFC" code="11">
+        <unit.22 item="Change directory">
+            <command>cd ${RCD}</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.22>
+        <unit.23 item="Upload test result">
+            <command>./sfc.sh</command>
+            <L6></L6>
+            <L10>Y</L10>
+            <L12></L12>
+            <expected></expected>
+            <warning></warning>
+            <delay></delay>
+        </unit.23>
     </module>
 </sequence>
