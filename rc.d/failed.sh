@@ -6,6 +6,7 @@
 #
 ############# Version ###############
 
+export FAIL_FLAG="1"
 . ${RCD}/functions
 
 #confirm "确认重新开始测试(Y)或上传失败日誌(N):  "
@@ -23,18 +24,18 @@ if [ "$ans" -ne 0 ]; then
 elif [ "$ans" -eq 0 ]; then
 	# . ${RCD}/main_flow_failed.sh -t
 	if [ "$failed_log" = "TIME" ]; then
-		. ${RCD}/main_flow.sh -t --skip 2
+		. ${FOX}/main_flow.sh -t --skip 2
 	elif [ "$failed_log" = "BIOS" ]; then
-		. ${RCD}/main_flow.sh -t --skip 3
+		. ${FOX}/main_flow.sh -t --skip 3
 	elif [ "$failed_log" = "CPU temperature" ]; then
-		. ${RCD}/main_flow.sh -t --skip 4
+		. ${FOX}/main_flow.sh -t --skip 4
 	elif [ "$failed_log" = "USB" ]; then
-		. ${RCD}/main_flow.sh -t --skip 5
+		. ${FOX}/main_flow.sh -t --skip 5
 	elif [ "$failed_log" = "LED" ]; then
-		. ${RCD}/main_flow.sh -t --skip 6
+		. ${FOX}/main_flow.sh -t --skip 6
 	elif [ "$failed_log" = "Loopback" ]; then
-		. ${RCD}/main_flow.sh -t --skip 9
+		. ${FOX}/main_flow.sh -t --skip 9
 	else
-		. ${RCD}/main_flow.sh -t
+		. ${FOX}/main_flow.sh -t
 	fi
 fi

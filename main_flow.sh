@@ -287,8 +287,10 @@ fi > /dev/null 2>&1
     # It needs to scan barcode if FFT runs in L10
     if [ ${Level_Number} = "L6" ] || [ ${Level_Number} = "L10" ] ; then
         # ${RCD}/Version.sh
-        . scanid.sh
-        [ $? -ne 0 ] && exit 250
+        if [ "${FAIL_FLAG}" = "" ]; then
+            . scanid.sh
+            [ $? -ne 0 ] && exit 250
+        fi
     fi
     #Add for control INIT or FT by Madison
     #. ${RCD}/Phase_check.sh
