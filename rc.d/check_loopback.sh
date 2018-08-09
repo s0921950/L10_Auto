@@ -8,7 +8,7 @@
 
 . ${RCD}/functions
 
-readonly MUSIC_SOURCE=thund.wav
+readonly MUSIC_SOURCE=${FOX}/Media/thund.wav
 readonly RECORD_PATH=/tmp/
 readonly RECORD_FILE=thund_test.wav
 readonly MIN_VOLUME=5

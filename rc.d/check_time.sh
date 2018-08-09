@@ -21,5 +21,5 @@ echo `date -s "$set_time"`
 
 echo `hwclock -w`
 
-pass_message "时间验证通过..."
+green_message "时间验证通过..."
 exit 0

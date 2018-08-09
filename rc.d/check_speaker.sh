@@ -3,21 +3,21 @@
 function play_1()
 {
   {
-    mplayer Media/1.wav
+    mplayer ${FOX}/Media/1.wav
   } &> /dev/null
 }
 
 function play_2()
 {
   {
-    mplayer Media/2.wav
+    mplayer ${FOX}/Media/2.wav
   } &> /dev/null
 }
 
 function play_3()
 {
   {
-    mplayer Media/3.wav
+    mplayer ${FOX}/Media/3.wav
   } &> /dev/null
 }
 

@@ -8,8 +8,8 @@
 readonly PROGRAM="`basename $0`"
 readonly VERSION=""
 readonly RELEASEDATE="//2013"
-readonly AUTHOR="Aaron Luo"
-readonly COPYRIGHT="Copyright(c)2013 Foxconn IND., Group."
+readonly AUTHOR=""
+readonly COPYRIGHT=""
 export FOX="/home/foxconn/workspace/L10_Auto"
 
 . ${FOX}/rc.d/functions
