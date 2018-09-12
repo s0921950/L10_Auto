@@ -17,4 +17,4 @@ if [ $ans -ne 0 ]; then
 	. ${RCD}/failed.sh
 	exit 1
 fi
-pass_message "电源与休眠LED测试通过..."
+green_message "电源与休眠LED测试通过..."

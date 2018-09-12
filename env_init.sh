@@ -16,7 +16,7 @@ function show_platform_info()
     echo "Platform information: "
     echo "Kernel version: `uname -r`"
     echo "GNU C libary version: `ldd --version | awk '/libc/ {print $4}'`"
-    echo "GCC version: `gcc --version|awk '/GCC/ {print $3}'`"
+    # echo "GCC version: `gcc --version|awk '/GCC/ {print $3}'`"
     # echo "Diagnostic version: `awk '/Version/ {print $2}' ChangeLog | sed -n '1p'`"
     # echo "Release date: `awk '/Release date/ {print $NF}' ChangeLog | sed -n '1p'`"
 }
